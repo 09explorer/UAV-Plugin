@@ -18,24 +18,13 @@ import java.util.HashMap;
 public class activateCommand implements CommandExecutor {
 
     private final int PRICE_AMOUNT = 5;
+    private final int COOLDOWN_TIME = 86400;
     public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        int cooldownTime = PRICE_AMOUNT; // number of seconds for cooldown
 
         if(sender instanceof Player){
-
-            if(cooldowns.containsKey(sender.getName())){
-                long secondsLeft = ((cooldowns.get(sender.getName())/1000)+cooldownTime) - (System.currentTimeMillis()/1000);
-                if(secondsLeft > 0){
-                    //cooldown
-                    sender.sendMessage(ChatColor.DARK_RED + "You may not use this command for another " + secondsLeft + " seconds!");
-                    return true;
-                }
-            }
-
-            cooldowns.put(sender.getName(), System.currentTimeMillis());
 
             final Player player = (Player) sender;
             Inventory inv = player.getInventory();
@@ -51,21 +40,42 @@ public class activateCommand implements CommandExecutor {
                 Player targetedPlayer = Bukkit.getServer().getPlayerExact(targetedPlayerString);
                 if(targetedPlayer == null) player.sendMessage(ChatColor.DARK_RED + "This player is not online!");
                else {
+
                    //Remove the payment
                    if(hasItem(player, payment)){
+
+                       if(cooldowns.containsKey(sender.getName())){
+                           long secondsLeft = ((cooldowns.get(sender.getName())/1000)+COOLDOWN_TIME) - (System.currentTimeMillis()/1000);
+                           long minutesLeft = secondsLeft / 60;
+                           long hoursLeft = secondsLeft / 3600;
+                           if(secondsLeft > 0){
+                               //cooldown messages
+                               if(hoursLeft >= 1) sender.sendMessage(ChatColor.DARK_RED + "You may not use this command for another " + hoursLeft + " hours!"); //hours
+                               else if(minutesLeft >= 1 && minutesLeft < 60) sender.sendMessage(ChatColor.DARK_RED + "You may not use this command for another " + minutesLeft + " minutes!"); //minutes
+                               else sender.sendMessage(ChatColor.DARK_RED + "You may not use this command for another " + secondsLeft + " seconds!"); // seconds
+                               return true;
+                           }
+                       }
+
+                       cooldowns.put(sender.getName(), System.currentTimeMillis());
+
                       inv.removeItem(payment);
                       player.sendMessage(ChatColor.DARK_GREEN + "Payment Successful!");
+
+
                       //Inform the stalked player
                        targetedPlayer.sendMessage(ChatColor.DARK_RED + "You are being tracked with a government UAV!");
 
                        double targetX = targetedPlayer.getX();
+                       double targetY = targetedPlayer.getY();
                        double targetZ = targetedPlayer.getZ();
 
                        //round to 2 decimal places
                        double roundedX = Math.round(targetX * 100.0) / 100.0;
+                       double roundedY = Math.round(targetY * 100.0) / 100.0;
                        double roundedZ = Math.round(targetZ * 100.0) / 100.0;
 
-                       player.sendMessage(ChatColor.AQUA + "[UAV Drone] "+ targetedPlayer.getName() + "'s coordinates are: " + roundedX + " " + roundedZ);
+                       player.sendMessage(ChatColor.AQUA + "[UAV Drone] "+ targetedPlayer.getName() + "'s coordinates are: " + roundedX + " " + roundedY + " " + roundedZ);
                    }
                    else{
                        player.sendMessage(ChatColor.DARK_RED + "You do not have enough items for payment!");

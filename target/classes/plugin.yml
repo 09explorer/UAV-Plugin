@@ -1,0 +1,12 @@
+name: UAV
+version: '1.0'
+main: io.github.dominic.uavp2.UAV
+api-version: '1.20'
+authors: [Dominic Young]
+description: A UAV drone to stalk someone
+
+commands:
+  activate:
+    description: Stalk someone
+  uav:
+    description: The help command

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/UAV-Drone.iml" filepath="$PROJECT_DIR$/UAV-Drone.iml" />
       <module fileurl="file://$PROJECT_DIR$/UAVP2.iml" filepath="$PROJECT_DIR$/UAVP2.iml" />
     </modules>
   </component>

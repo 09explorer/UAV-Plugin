@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.math.*;
 
@@ -25,15 +26,16 @@ public class activateCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if(sender instanceof Player){
-
+            Plugin p = Bukkit.getPluginManager().getPlugin("UAV");
             final Player player = (Player) sender;
-            Inventory inv = player.getInventory();
+
+                    Inventory inv = player.getInventory();
             Material m = Material.NETHERITE_INGOT;
-            ItemStack payment = new ItemStack(m, 5);
+            ItemStack payment = new ItemStack(m, PRICE_AMOUNT);
 
             if(args.length == 0) {
-                player.sendMessage("Please provide a target!");
-                player.sendMessage("Example: /activate <player>");
+                player.sendMessage(ChatColor.DARK_RED + "Please provide a target!");
+                player.sendMessage(ChatColor.YELLOW + "Example: /activate <player>");
             }
             else{
                 String targetedPlayerString = args[0];
@@ -65,17 +67,28 @@ public class activateCommand implements CommandExecutor {
 
                       //Inform the stalked player
                        targetedPlayer.sendMessage(ChatColor.DARK_RED + "You are being tracked with a government UAV!");
+                       int id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(p, new Runnable() {
+                           @Override
+                           public void run() {
+                               double targetX = targetedPlayer.getX();
+                               double targetY = targetedPlayer.getY();
+                               double targetZ = targetedPlayer.getZ();
 
-                       double targetX = targetedPlayer.getX();
-                       double targetY = targetedPlayer.getY();
-                       double targetZ = targetedPlayer.getZ();
+                               //round to 2 decimal places
+                               double roundedX = Math.round(targetX * 100.0) / 100.0;
+                               double roundedY = Math.round(targetY * 100.0) / 100.0;
+                               double roundedZ = Math.round(targetZ * 100.0) / 100.0;
 
-                       //round to 2 decimal places
-                       double roundedX = Math.round(targetX * 100.0) / 100.0;
-                       double roundedY = Math.round(targetY * 100.0) / 100.0;
-                       double roundedZ = Math.round(targetZ * 100.0) / 100.0;
+                               player.sendMessage(ChatColor.AQUA + "[UAV Drone] "+ targetedPlayer.getName() + "'s coordinates are: " + roundedX + " " + roundedY + " " + roundedZ);
+                           }
+                       }, 0, 200);
+                       Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+                           @Override
+                           public void run() {
+                               Bukkit.getScheduler().cancelTask(id);
+                           }
+                       }, 600);
 
-                       player.sendMessage(ChatColor.AQUA + "[UAV Drone] "+ targetedPlayer.getName() + "'s coordinates are: " + roundedX + " " + roundedY + " " + roundedZ);
                    }
                    else{
                        player.sendMessage(ChatColor.DARK_RED + "You do not have enough items for payment!");
@@ -96,5 +109,18 @@ public class activateCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    public void updatePos (Player player, Player targetedPlayer){
+        double targetX = targetedPlayer.getX();
+        double targetY = targetedPlayer.getY();
+        double targetZ = targetedPlayer.getZ();
+
+        //round to 2 decimal places
+        double roundedX = Math.round(targetX * 100.0) / 100.0;
+        double roundedY = Math.round(targetY * 100.0) / 100.0;
+        double roundedZ = Math.round(targetZ * 100.0) / 100.0;
+
+        player.sendMessage(ChatColor.AQUA + "[UAV Drone] "+ targetedPlayer.getName() + "'s coordinates are: " + roundedX + " " + roundedY + " " + roundedZ);
     }
 }

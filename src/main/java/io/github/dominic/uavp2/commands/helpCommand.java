@@ -15,6 +15,7 @@ public class helpCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + "/uav: this command");
             sender.sendMessage(ChatColor.YELLOW + "/activate <player>: At a cost of 5 netherite ingots, you may download the coordinates of any online user");
             sender.sendMessage(ChatColor.YELLOW + "You will only get those coordinates once, and you may not use the command more than once every 24 hours");
+            sender.sendMessage(ChatColor.YELLOW + "/activatesecret <player>: At a cost of 10 netherite ingots, you can do the same thing as activate but it WONT'T notify the tracked player");
         }
 
 

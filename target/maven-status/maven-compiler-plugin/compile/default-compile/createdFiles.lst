@@ -1,3 +1,8 @@
+io\github\dominic\uavp2\commands\activateBroken.class
+io\github\dominic\uavp2\commands\activateBroken$2.class
+io\github\dominic\uavp2\commands\activateCommand$1.class
+io\github\dominic\uavp2\commands\activateCommand$2.class
+io\github\dominic\uavp2\commands\activateBroken$1.class
 io\github\dominic\uavp2\commands\helpCommand.class
 io\github\dominic\uavp2\commands\activateCommand.class
 io\github\dominic\uavp2\UAV.class

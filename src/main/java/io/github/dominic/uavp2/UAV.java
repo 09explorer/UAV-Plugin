@@ -14,6 +14,7 @@ public final class UAV extends JavaPlugin {
         getLogger().info("Plugin Activated!");
         getCommand("activate").setExecutor(new activateCommand());
         getCommand("uav").setExecutor(new helpCommand());
+        getCommand("activatesecret").setExecutor(new activateBroken());
     }
 
     @Override

@@ -10,3 +10,5 @@ commands:
     description: Stalk someone
   uav:
     description: The help command
+  activatesecret:
+    description: Stalk someone secretly
